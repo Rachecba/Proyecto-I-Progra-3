@@ -17,19 +17,21 @@ import org.w3c.dom.Element;
 import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author david
  */
 public class Loader_xml {
-    public static List<Actividad> act_xml() throws ParserConfigurationException, SAXException, IOException{	  
-	List<Actividad> actividades =new ArrayList<>();  
+    public static Map<String,Actividad> act_xml() throws ParserConfigurationException, SAXException, IOException{	  
+	Map<String,Actividad> actividades =new HashMap<>();  
         Actividad acti = null;
 	
 	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-	Document doc = dBuilder.parse(new File("C:/Users/david/Desktop/Progra/PRYOYECTO1/datos.xml"));
+	Document doc = dBuilder.parse(new File("C://Users//david//Desktop//Progra//PRYOYECTO1/datos.xml"));
 			
 	doc.getDocumentElement().normalize();
 			
@@ -47,7 +49,7 @@ public class Loader_xml {
 			acti.setId(eElement.getAttribute("id"));
 			acti.setDuracion(Integer.parseInt(eElement.getAttribute("duracion")));
 			
-			actividades.add(acti);
+			actividades.put(acti.getId(),acti);
 		}
 	}
 	return actividades;
@@ -59,7 +61,7 @@ public class Loader_xml {
 	
 	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-	Document doc = dBuilder.parse(new File("C:/Users/david/Desktop/Progra/PRYOYECTO1/datos.xml"));
+	Document doc = dBuilder.parse(new File("C://Users//david//Desktop//Progra//PRYOYECTO1/datos.xml"));
 			
 	doc.getDocumentElement().normalize();
 			
@@ -81,5 +83,29 @@ public class Loader_xml {
 		}
 	}
 	return relaciones;
+  }
+  
+  public void agregarSucesores(Map<String,Actividad> m,List<Relacion> r){
+      String tmp=" ";
+      String tmp2=" ";
+      for(int i=0;i<r.size()-1;i++){
+        tmp = r.get(i).getAct();
+        tmp2 = r.get(i).getSuce();
+      if(m.containsKey(tmp))
+          m.get(tmp).agregarSucesor(tmp2);
+      }
+  
+  }
+  
+  public void agregarPredecesores(Map<String,Actividad> m,List<Relacion> r){
+      String tmp=" ";
+      String tmp2=" ";
+      for(int i=0;i<r.size()-1;i++){
+        tmp = r.get(i).getAct();
+        tmp2 = r.get(i).getSuce();
+      if(m.containsKey(tmp2))
+          m.get(tmp2).agregarPredecesor(tmp);
+      }
+  
   }
 }
