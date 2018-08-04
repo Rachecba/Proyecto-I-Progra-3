@@ -11,13 +11,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.Graph;
-import org.jgrapht.UndirectedGraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleWeightedGraph;
 import org.xml.sax.SAXException;
 
 /**
