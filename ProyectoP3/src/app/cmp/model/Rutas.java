@@ -5,6 +5,7 @@
  */
 package app.cmp.model;
 
+import app.cmp.managed.Loader_xml;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -12,16 +13,37 @@ import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
+import static app.cmp.managed.Loader_xml.act_xml;
+import static app.cmp.managed.Loader_xml.relac_xml;
 
 /**
  *
  * @author david
  */
-public class Rutas {
+public final class Rutas {
 
     public static Actividad root = new Actividad("Root", 0, 0, 0);
     public static Actividad end;
+    private final Map<String, Actividad> acividades;
+    private final List<Relacion> relaciones;
 
+    //constructor
+    public Rutas(String direccion){
+        Loader_xml loader = new Loader_xml();
+        DirectedGraph h;
+        
+        acividades = act_xml(direccion);
+        relaciones = relac_xml(direccion);
+        
+        loader.contruirEstructura(acividades, relaciones);
+        h = construirGrafo(acividades, relaciones);
+        asignarRoot(acividades, h);
+        asignarEnd(acividades, h);
+        
+        recorreGrafoIn(h);
+        recorreGrafoF(h);
+    }
+    
     /*
     Agrega root al hashmap 
     Y luego verifica cuales de las Actividades del hashmap no tiene predecesores excluyendo root (sino se haria un root apunta a root)
@@ -141,4 +163,11 @@ public class Rutas {
 
     }
 
+    public Map<String, Actividad> getAcividades() {
+        return acividades;
+    }
+
+    public List<Relacion> getRelaciones() {
+        return relaciones;
+    }
 }

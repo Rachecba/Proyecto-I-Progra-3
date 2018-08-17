@@ -5,6 +5,7 @@
  */
 package app.cmp.application;
 
+import app.cmp.gui.simpleView;
 import app.cmp.model.Actividad;
 import app.cmp.model.Relacion;
 import app.cmp.model.Rutas;
@@ -31,20 +32,12 @@ public class Application {
             File selectedFile = jfc.getSelectedFile();
 
             try {
-                Loader_xml loader = new Loader_xml();
-                Rutas rutas = new Rutas();
-                Map<String, Actividad> actividades = act_xml(selectedFile.getAbsolutePath());
-                DirectedGraph h;
-                List<Relacion> relaciones = relac_xml(selectedFile.getAbsolutePath());
-                loader.contruirEstructura(actividades, relaciones);
-
-                h = rutas.construirGrafo(actividades, relaciones);
-                rutas.asignarRoot(actividades, h);
-                rutas.asignarEnd(actividades, h);
-
-                rutas.recorreGrafoIn(h);
-                rutas.recorreGrafoF(h);
-                System.out.println(rutas.cpm(actividades));
+                Rutas rutas = new Rutas(selectedFile.getAbsolutePath());
+                System.out.println(rutas.cpm(rutas.getAcividades()));
+                
+                simpleView view = new simpleView();
+                view.setModel(rutas);
+                view.setVisible(true);
 
             } catch (Exception e) {
                 System.out.print("\n\n\nERROR CON EL PROGRAMA!!!!");
