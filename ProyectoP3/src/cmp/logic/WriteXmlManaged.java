@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package app.cmp.managed;
+package cmp.logic;
 
-import app.cmp.model.Datos;
+import cmp.data.Datos;
 import java.io.File;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

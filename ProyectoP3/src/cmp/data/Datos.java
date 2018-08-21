@@ -1,4 +1,4 @@
-package app.cmp.model;
+package cmp.data;
 
 import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlAccessType;

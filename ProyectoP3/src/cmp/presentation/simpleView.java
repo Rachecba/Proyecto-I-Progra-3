@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package app.cmp.gui;
+package cmp.presentation;
 
-import app.cmp.model.Actividad;
-import app.cmp.model.Rutas;
+import cmp.data.Actividad;
+import cmp.data.Rutas;
 import java.awt.Color;
 import java.awt.Graphics;
 
@@ -94,6 +94,7 @@ public class simpleView extends javax.swing.JFrame {
         this.model = r;
     }
     
+    @Override
     public void paint(Graphics g){
         super.paint(g);
         for(Actividad a : model.getAcividades().values()){
@@ -102,7 +103,8 @@ public class simpleView extends javax.swing.JFrame {
             else
                 g.setColor(Color.black);
             g.drawOval(a.getX()-r, a.getY()-r, d, d);
-            g.drawString(a.getId(), a.getX()-r-5, getY()+5);
+            g.drawString(a.getId() + "(" + a.getDuracion() + ")", a.getX()-r+5, a.getY()+5);
         }
+        //for de actividades y sus sucesores, drawLine de corrdenadas de actividad con coordenadas de sucesor
     }
 }

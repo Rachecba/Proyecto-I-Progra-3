@@ -3,12 +3,12 @@
 * To change this template file, choose Tools | Templates
 * and open the template in the editor.
 */
-package app.cmp.managed;
+package cmp.logic;
 
-import static app.cmp.managed.ReadXmlManaged.readXML;
-import app.cmp.model.Actividad;
-import app.cmp.model.Datos;
-import app.cmp.model.Relacion;
+import static cmp.logic.ReadXmlManaged.readXML;
+import cmp.data.Actividad;
+import cmp.data.Datos;
+import cmp.data.Relacion;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.HashMap;

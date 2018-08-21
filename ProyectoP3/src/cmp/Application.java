@@ -3,21 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package app.cmp.application;
+package cmp;
 
-import app.cmp.gui.simpleView;
-import app.cmp.model.Actividad;
-import app.cmp.model.Relacion;
-import app.cmp.model.Rutas;
-import app.cmp.managed.Loader_xml;
-import static app.cmp.managed.Loader_xml.act_xml;
-import static app.cmp.managed.Loader_xml.relac_xml;
+import cmp.presentation.simpleView;
+import cmp.data.Rutas;
 import java.io.File;
-import java.util.List;
-import java.util.Map;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
-import org.jgrapht.DirectedGraph;
 
 /**
  *

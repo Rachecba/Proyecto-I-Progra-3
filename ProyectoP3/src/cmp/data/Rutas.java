@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package app.cmp.model;
+package cmp.data;
 
-import app.cmp.managed.Loader_xml;
+import cmp.logic.Loader_xml;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +13,8 @@ import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
-import static app.cmp.managed.Loader_xml.act_xml;
-import static app.cmp.managed.Loader_xml.relac_xml;
+import static cmp.logic.Loader_xml.act_xml;
+import static cmp.logic.Loader_xml.relac_xml;
 
 /**
  *
