@@ -6,7 +6,7 @@
 package cmp;
 
 import cmp.presentation.simpleView;
-import cmp.data.Rutas;
+import cmp.logic.Rutas;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;

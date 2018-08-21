@@ -6,7 +6,7 @@
 package cmp.presentation;
 
 import cmp.data.Actividad;
-import cmp.data.Rutas;
+import cmp.logic.Rutas;
 import java.awt.Color;
 import java.awt.Graphics;
 

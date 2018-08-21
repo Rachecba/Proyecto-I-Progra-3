@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cmp.data;
+package cmp.logic;
 
+import cmp.data.Actividad;
+import cmp.data.Relacion;
 import cmp.logic.Loader_xml;
 import java.util.Collections;
 import java.util.List;
