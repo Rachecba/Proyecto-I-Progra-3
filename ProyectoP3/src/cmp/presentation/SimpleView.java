@@ -6,20 +6,21 @@
 package cmp.presentation;
 
 import cmp.data.Actividad;
-import cmp.logic.Rutas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  *
  * @author leaca
  */
-public class simpleView extends javax.swing.JFrame {
+public class SimpleView extends javax.swing.JFrame implements Observer{
 
     /**
      * Creates new form simpleView
      */
-    public simpleView() {
+    public SimpleView() {
         initComponents();
     }
 
@@ -33,12 +34,17 @@ public class simpleView extends javax.swing.JFrame {
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 819, Short.MAX_VALUE)
+            .addGap(0, 799, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -47,6 +53,12 @@ public class simpleView extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+     //controller crea una actividad, actualiza el modelo y el modelo el observador que esta en el view
+    int cont = 0;
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        this.controller.agregarActividad(""+cont++,1, evt.getX(), evt.getY());
+    }//GEN-LAST:event_formMouseClicked
 
     /**
      * @param args the command line arguments
@@ -65,20 +77,21 @@ public class simpleView extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(simpleView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SimpleView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(simpleView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SimpleView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(simpleView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SimpleView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(simpleView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SimpleView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new simpleView().setVisible(true);
+                new SimpleView().setVisible(true);
             }
         });
     }
@@ -86,25 +99,39 @@ public class simpleView extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 
-    public Rutas model;
+    public Model model;
+    public Controller controller;
     int r = 20; //radio
     int d = 40; //diametro
     
-    public void setModel(Rutas r){
-        this.model = r;
+    public void setModel(Model model){
+        this.model = model;
+        this.model.addObserver(this);
+    }
+    
+    public void setController(Controller controller){
+        this.controller = controller;
     }
     
     @Override
     public void paint(Graphics g){
         super.paint(g);
-        for(Actividad a : model.getAcividades().values()){
+        for(Actividad a : model.getModel().getAcividades().values()){
             if(a.calculoHolgura() == 0)
                 g.setColor(Color.red);
             else
                 g.setColor(Color.black);
             g.drawOval(a.getX()-r, a.getY()-r, d, d);
-            g.drawString(a.getId() + "(" + a.getDuracion() + ")", a.getX()-r+5, a.getY()+5);
+            g.drawString(a.getId() + "(" + a.getDuracion() + ")", a.getX()-r+5, a.getY()+5);    
+//            for(){
+//            
+//            }
         }
         //for de actividades y sus sucesores, drawLine de corrdenadas de actividad con coordenadas de sucesor
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        this.repaint();
     }
 }

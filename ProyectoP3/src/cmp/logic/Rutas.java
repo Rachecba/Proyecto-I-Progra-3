@@ -172,4 +172,9 @@ public final class Rutas {
     public List<Relacion> getRelaciones() {
         return relaciones;
     }
+    
+    public void agregarActividad(Actividad a){
+        if(!acividades.containsKey(a.getId()))
+            acividades.put(a.getId(),a);
+    }
 }

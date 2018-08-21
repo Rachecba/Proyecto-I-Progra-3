@@ -5,8 +5,10 @@
  */
 package cmp;
 
-import cmp.presentation.simpleView;
+import cmp.presentation.SimpleView;
 import cmp.logic.Rutas;
+import cmp.presentation.Controller;
+import cmp.presentation.Model;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
@@ -16,23 +18,25 @@ import javax.swing.filechooser.FileSystemView;
  * @author david
  */
 public class Application {
-    public static void main(String[] args) {
+    public static void main(String[] args) {        
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         int returnValue = jfc.showOpenDialog(null);
 
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = jfc.getSelectedFile();
-
             try {
                 Rutas rutas = new Rutas(selectedFile.getAbsolutePath());
                 System.out.println(rutas.cpm(rutas.getAcividades()));
                 
-                simpleView view = new simpleView();
-                view.setModel(rutas);
+                SimpleView view = new SimpleView();
+                Model model = new Model(rutas);
+                Controller controller = new Controller(model, view);   
                 view.setVisible(true);
-
+                
+                //System.in.read(); //esto es para esperar hasta que el usuario haga enter
             } catch (Exception e) {
                 System.out.print("\n\n\nERROR CON EL PROGRAMA!!!!");
+                e.printStackTrace();
             }
         }
     }
