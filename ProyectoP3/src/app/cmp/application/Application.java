@@ -5,13 +5,15 @@
  */
 package app.cmp.application;
 
-import app.cmp.gui.simpleView;
+import app.cmp.view.simpleView;
 import app.cmp.model.Actividad;
 import app.cmp.model.Relacion;
 import app.cmp.model.Rutas;
 import app.cmp.managed.Loader_xml;
 import static app.cmp.managed.Loader_xml.act_xml;
 import static app.cmp.managed.Loader_xml.relac_xml;
+import app.cmp.view.Model;
+import app.cpm.controller.Controller;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +38,16 @@ public class Application {
                 System.out.println(rutas.cpm(rutas.getAcividades()));
                 
                 simpleView view = new simpleView();
-                view.setModel(rutas);
+                Model model = new Model(rutas);
+                Controller controller = new Controller(model, view);
+                
+               // view.setModel(model);
                 view.setVisible(true);
+                
+                //model.setR(rutas);
+                
+                System.in.read();
+               // model.agregarActividad(new Actividad("J",50, 200, 200));
 
             } catch (Exception e) {
                 System.out.print("\n\n\nERROR CON EL PROGRAMA!!!!");

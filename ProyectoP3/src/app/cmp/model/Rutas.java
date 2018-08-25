@@ -24,7 +24,7 @@ public final class Rutas {
 
     public static Actividad root = new Actividad("Root", 0, 0, 0);
     public static Actividad end;
-    private final Map<String, Actividad> acividades;
+    private final Map<String, Actividad> actividades;
     private final List<Relacion> relaciones;
 
     //constructor
@@ -32,13 +32,13 @@ public final class Rutas {
         Loader_xml loader = new Loader_xml();
         DirectedGraph h;
         
-        acividades = act_xml(direccion);
+        actividades = act_xml(direccion);
         relaciones = relac_xml(direccion);
         
-        loader.contruirEstructura(acividades, relaciones);
-        h = construirGrafo(acividades, relaciones);
-        asignarRoot(acividades, h);
-        asignarEnd(acividades, h);
+        loader.contruirEstructura(actividades, relaciones);
+        h = construirGrafo(actividades, relaciones);
+        asignarRoot(actividades, h);
+        asignarEnd(actividades, h);
         
         recorreGrafoIn(h);
         recorreGrafoF(h);
@@ -49,6 +49,12 @@ public final class Rutas {
     Y luego verifica cuales de las Actividades del hashmap no tiene predecesores excluyendo root (sino se haria un root apunta a root)
     Y luego agrega el camino de root a la Actividad
      */
+    
+    public void agregarActividad(Actividad act){
+        if(!actividades.containsKey(act.getId()))
+        actividades.put(act.getId(), act); 
+    }
+    
     public void asignarRoot(Map<String, Actividad> m, DirectedGraph g) {
         m.put(root.getId(), root);
         for (Map.Entry<String, Actividad> entrada : m.entrySet()) {
@@ -164,7 +170,7 @@ public final class Rutas {
     }
 
     public Map<String, Actividad> getAcividades() {
-        return acividades;
+        return actividades;
     }
 
     public List<Relacion> getRelaciones() {

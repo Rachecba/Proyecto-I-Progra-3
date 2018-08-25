@@ -3,24 +3,35 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package app.cmp.gui;
+package app.cmp.view;
 
 import app.cmp.model.Actividad;
 import app.cmp.model.Rutas;
+import app.cpm.controller.Controller;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.geom.Ellipse2D;
+import java.util.Observable;
+import java.util.Observer;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  *
  * @author leaca
  */
-public class simpleView extends javax.swing.JFrame {
+public class simpleView extends javax.swing.JFrame implements Observer{
 
     /**
      * Creates new form simpleView
      */
     public simpleView() {
         initComponents();
+        initListeners(); //metodo agregado por el profe
     }
 
     /**
@@ -86,23 +97,134 @@ public class simpleView extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 
-    public Rutas model;
+    public Model model;
+    public Controller controller;
     int r = 20; //radio
     int d = 40; //diametro
+    boolean arrastrar;
+    int mouseX;
+    int mouseY;
+    String idActividad;
     
-    public void setModel(Rutas r){
+    public void setModel(Model r){
         this.model = r;
+        model.addObserver(this); //agregamos este view a la lista de observers del model
+    }
+    
+    public void setController(Controller c){
+        this.controller = c;  
+             
+    }
+    
+    public void initListeners(){
+        this.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent ev){
+                if(ev.getClickCount() == 2)
+                    preAgregarActividad(ev.getX(), ev.getY());
+                else
+                {
+                    Actividad seleccionada = seleccionar(ev.getX(), ev.getY());
+                    if(seleccionada != null)
+                        setTitle(seleccionada.getId());
+                }
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e){
+                for(Actividad a : model.getR().getAcividades().values()){
+                    if(a.getX() == e.getX() && a.getY() == e.getY()){
+                        mouseX = e.getX();
+                        mouseY = e.getY();
+                        arrastrar = true;
+                        idActividad = a.getId();
+                        break;
+                    }
+                }
+            }
+            
+            @Override
+            public void mouseReleased(MouseEvent e){
+                arrastrar = false;
+            }
+        }
+        );
+        
+        this.addMouseMotionListener(new MouseMotionAdapter(){
+            @Override
+            public void mouseDragged(MouseEvent e){
+                int x = model.getR().getAcividades().get(idActividad).getX();
+                int y = model.getR().getAcividades().get(idActividad).getY();
+                
+                model.getR().getAcividades().get(idActividad).setX(x + (e.getX() - mouseX));
+                model.getR().getAcividades().get(idActividad).setY(y + (e.getY() - mouseY));
+                
+                repaint();
+                
+            }
+            
+        });
+                
+    }
+    
+    public Actividad seleccionar(int x, int y){
+        for(Actividad a : model.getR().getAcividades().values()){
+            if( (new Ellipse2D.Double(a.getX()-r, a.getY() - r, d, d)).contains(x,y))
+                return a;
+        }
+        return null;
+    }
+    
+    public void preAgregarActividad(int x, int y){
+        JTextField id = new JTextField();
+        JTextField duracion = new JTextField();
+        Object[] message = { "Id:", id, "Duracion:", duracion};
+        int option = JOptionPane.showConfirmDialog(null, message, "Actividad", JOptionPane.OK_CANCEL_OPTION);
+        
+        
+        //---- validar datos ingresados ----
+        while( model.getR().getAcividades().containsKey(id.getText())|| !esEntero(duracion.getText()) || Integer.parseInt(duracion.getText()) < 0 ){
+            if(model.getR().getAcividades().containsKey(id.getText())) JOptionPane.showMessageDialog(null, "La actividad ya existe", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+            if(!esEntero(duracion.getText())) JOptionPane.showMessageDialog(null, "La duración debe ser un número entero", "ERROR", JOptionPane.INFORMATION_MESSAGE);//*******
+            if(Integer.parseInt(duracion.getText()) < 0) JOptionPane.showMessageDialog(null, "La duración debe ser un número positivo", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+            
+            JOptionPane.showConfirmDialog(null, message, "Actividad", JOptionPane.OK_CANCEL_OPTION);
+            
+            //----------------------------------
+            if(option == JOptionPane.OK_OPTION){
+                try{ controller.agregarActividad(id.getText(), Integer.parseInt(duracion.getText()), x, y);
+                break;
+                }
+                catch(Exception e){ }
+            }
+            else
+                break;
+        }
+    }
+    
+    public boolean esEntero(String numero){ //valida si el numero ingresado es un entero
+        for(int i = 0; i < numero.length(); i++){ //arreglar
+            if(Character.isLetter(numero.charAt(i)) || numero.charAt(i) == '.' || numero.charAt(i) == ',') //isDigit(numero.charAt(i)))
+                return false;
+        }
+        return true;
     }
     
     public void paint(Graphics g){
         super.paint(g);
-        for(Actividad a : model.getAcividades().values()){
+        for(Actividad a : model.getR().getAcividades().values()){
             if(a.calculoHolgura() == 0)
                 g.setColor(Color.red);
             else
                 g.setColor(Color.black);
             g.drawOval(a.getX()-r, a.getY()-r, d, d);
-            g.drawString(a.getId(), a.getX()-r-5, getY()+5);
+            g.drawString(a.getId()+ "(" +a.getDuracion()+")", a.getX()-r+5, a.getY()+5);
         }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+       this.repaint(); //llama al metodo paint que tenemos implementado arriba
+       
     }
 }
