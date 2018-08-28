@@ -6,7 +6,6 @@
 package app.cmp.view;
 
 import app.cmp.model.Actividad;
-import app.cmp.model.Rutas;
 import app.cpm.controller.Controller;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -18,7 +17,6 @@ import java.awt.geom.Ellipse2D;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
