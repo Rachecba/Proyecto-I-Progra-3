@@ -8,9 +8,6 @@ package app.cpm.controller;
 import app.cmp.model.Actividad;
 import app.cmp.view.Model;
 import app.cmp.view.simpleView;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -23,7 +20,7 @@ import javax.swing.JTextField;
  *
  * @author Rachel
  */
-public class Controller implements MouseListener, MouseMotionListener{
+public class Controller{
     Model model;
     simpleView view;
     boolean arrastrar;
@@ -59,53 +56,4 @@ public class Controller implements MouseListener, MouseMotionListener{
         Actividad act = new Actividad(id, duracion, x, y);
         model.agregarActividad(act);
     }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        for(Actividad a : model.getR().getAcividades().values()){
-            if(a.getX() == e.getX() && a.getY() == e.getY()){
-                this.mouseX = e.getX();
-                this.mouseY = e.getY();
-                this.arrastrar = true;
-                this.idActividad = a.getId();
-                break;
-            }
-        }
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        arrastrar = false;
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        int x = model.getR().getAcividades().get(this.idActividad).getX();
-        int y = model.getR().getAcividades().get(this.idActividad).getY();
-        
-        model.getR().getAcividades().get(this.idActividad).setX(x + (e.getX() - this.mouseX));
-        model.getR().getAcividades().get(this.idActividad).setY(y + (e.getY() - this.mouseY));
-        
-        view.repaint();
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

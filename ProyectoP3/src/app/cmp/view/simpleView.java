@@ -10,6 +10,7 @@ import app.cmp.model.Rutas;
 import app.cpm.controller.Controller;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -99,8 +100,8 @@ public class simpleView extends javax.swing.JFrame implements Observer{
 
     public Model model;
     public Controller controller;
-    int r = 20; //radio
-    int d = 40; //diametro
+    int r = 20; //radio del circulo 
+    int d = 40; //diametro del circulo
     boolean arrastrar;
     int mouseX;
     int mouseY;
@@ -132,12 +133,11 @@ public class simpleView extends javax.swing.JFrame implements Observer{
             
             @Override
             public void mousePressed(MouseEvent e){
+            
                 for(Actividad a : model.getR().getAcividades().values()){
-                    if(a.getX() == e.getX() && a.getY() == e.getY()){
-                        mouseX = e.getX();
-                        mouseY = e.getY();
-                        arrastrar = true;
+                    if(new Rectangle(a.getX() - d/2, a.getY() - d/2, d, d).contains(e.getPoint())){
                         idActividad = a.getId();
+                        arrastrar = true;
                         break;
                     }
                 }
@@ -145,6 +145,7 @@ public class simpleView extends javax.swing.JFrame implements Observer{
             
             @Override
             public void mouseReleased(MouseEvent e){
+                idActividad = "";
                 arrastrar = false;
             }
         }
@@ -153,14 +154,12 @@ public class simpleView extends javax.swing.JFrame implements Observer{
         this.addMouseMotionListener(new MouseMotionAdapter(){
             @Override
             public void mouseDragged(MouseEvent e){
-                int x = model.getR().getAcividades().get(idActividad).getX();
-                int y = model.getR().getAcividades().get(idActividad).getY();
+               if(arrastrar){
+                   model.getR().getAcividades().get(idActividad).setX(e.getX());
+                   model.getR().getAcividades().get(idActividad).setY(e.getY());
+               }
                 
-                model.getR().getAcividades().get(idActividad).setX(x + (e.getX() - mouseX));
-                model.getR().getAcividades().get(idActividad).setY(y + (e.getY() - mouseY));
-                
-                repaint();
-                
+               repaint(); 
             }
             
         });
