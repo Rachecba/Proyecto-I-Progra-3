@@ -23,11 +23,7 @@ import javax.swing.JTextField;
 public class Controller{
     Model model;
     simpleView view;
-    boolean arrastrar;
-    int mouseX;
-    int mouseY;
-    String idActividad;
-
+  
     public Controller(Model model, simpleView view) {
         this.model = model;
         this.view = view;
@@ -52,7 +48,9 @@ public class Controller{
         this.view = view;
     }
     
-    public void agregarActividad(String id, int duracion, int x, int y){
+    public void agregarActividad(String id, int duracion, int x, int y) throws Exception{
+        if (model.getR().getAcividades().containsKey(id))
+            throw new Exception("La actividad con este ID ya existe");
         Actividad act = new Actividad(id, duracion, x, y);
         model.agregarActividad(act);
     }

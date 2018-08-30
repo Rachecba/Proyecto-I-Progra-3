@@ -29,7 +29,7 @@ public class Model extends Observable{
         this.r = r;
     }
     
-    public void agregarActividad(Actividad A){ //throws Exception{
+    public void agregarActividad(Actividad A){
         r.agregarActividad(A);
         this.setChanged();
         this.notifyObservers();

@@ -175,29 +175,51 @@ public class simpleView extends javax.swing.JFrame implements Observer{
         JTextField id = new JTextField();
         JTextField duracion = new JTextField();
         Object[] message = { "Id:", id, "Duracion:", duracion};
-        int option = JOptionPane.showConfirmDialog(null, message, "Actividad", JOptionPane.OK_CANCEL_OPTION);
-        
-        //arreglar el cancelar
+        int option;
+        boolean isActividadValida;
         
         //---- validar datos ingresados ----
-        while( "".equals(id.getText()) || "".equals(duracion.getText()) || model.getR().getAcividades().containsKey(id.getText())|| !esEntero(duracion.getText()) || Integer.parseInt(duracion.getText()) < 0 ){
-            if("".equals(id.getText())) JOptionPane.showMessageDialog(null, "Debe ingresar un ID", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-            if("".equals(duracion.getText())) JOptionPane.showMessageDialog(null, "Debe ingresar una duración", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-      //      if(model.getR().getAcividades().containsKey(id.getText())) JOptionPane.showMessageDialog(null, "La actividad ya existe", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-            if(!esEntero(duracion.getText())) JOptionPane.showMessageDialog(null, "La duración debe ser un número entero", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-            if(!"".equals(duracion.getText()) && esEntero(duracion.getText())){ //verificar que duracion sea positivo solo si no es null y si es entero
-            if(Integer.parseInt(duracion.getText()) < 0) JOptionPane.showMessageDialog(null, "La duración debe ser un número positivo", "ERROR", JOptionPane.INFORMATION_MESSAGE);}
+        do {
+            isActividadValida = true;
+            option = JOptionPane.showConfirmDialog(null, message, "Actividad", JOptionPane.OK_CANCEL_OPTION);
             
-           option = JOptionPane.showConfirmDialog(null, message, "Actividad", JOptionPane.OK_CANCEL_OPTION);}
-            
-            //----------------------------------
-            if(option == JOptionPane.OK_OPTION){
-                try{ controller.agregarActividad(id.getText(), Integer.parseInt(duracion.getText()), x, y);
+            if (option == JOptionPane.OK_OPTION){
+                // Id no vacio
+                if("".equals(id.getText())){
+                    JOptionPane.showMessageDialog(null, "Debe ingresar un ID", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                    isActividadValida = false;
                 }
-                catch(Exception e){ } //thorw en model
-            }
                 
-        
+                // Duracion no vacia
+                if("".equals(duracion.getText())){
+                    JOptionPane.showMessageDialog(null, "Debe ingresar una duración", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                    isActividadValida = false;
+                }
+                // Que sea entero
+                if(!esEntero(duracion.getText())){
+                    JOptionPane.showMessageDialog(null, "La duración debe ser un número entero", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                    isActividadValida = false;
+                }
+                
+                // Que sea positivo
+                if(!"".equals(duracion.getText()) && esEntero(duracion.getText())){ //verificar que duracion sea positivo solo si no es null y si es entero
+                    if(Integer.parseInt(duracion.getText()) < 0){
+                        JOptionPane.showMessageDialog(null, "La duración debe ser un número positivo", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                        isActividadValida = false;
+                    }
+                }
+                
+                // Que el ID no exista
+                if (isActividadValida) {
+                    try{
+                        controller.agregarActividad(id.getText(), Integer.parseInt(duracion.getText()), x, y);
+                    }catch(Exception e){
+                        JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                        isActividadValida = false;
+                    }
+                }
+            } else break;
+        } while (!isActividadValida);
     }
     
     public boolean esEntero(String numero){ //valida si el numero ingresado es un entero
