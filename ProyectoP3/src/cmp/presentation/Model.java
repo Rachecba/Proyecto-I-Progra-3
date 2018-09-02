@@ -5,40 +5,57 @@
  */
 package cmp.presentation;
 
-import cpm.data.Actividad;
-import cpm.data.Rutas;
+import cmp.data.Actividad;
+import cmp.data.Relacion;
+import cmp.logic.Rutas;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
-import java.util.Observer;
+import org.jgrapht.DirectedGraph;
 
 /**
  *
- * @author Rachel
+ * @author leaca
  */
 public class Model extends Observable{
-    Rutas r;
+    private Rutas model;
+    public Actividad temporal;
 
-    public Model(Rutas r) {
-        this.r = r;
-    }
-
-    public Rutas getR() {
-        return r;
-    }
-
-    public void setR(Rutas r) {
-        this.r = r;
-    }
     
-    public void agregarActividad(Actividad A){
-        r.agregarActividad(A);
+    public Model() {
+         model=new Rutas();
+         temporal=new Actividad();
+
+    }
+
+
+    
+    
+    public Model(Rutas model) {
+        this.model = model;
+    }
+
+    public Rutas getModel() {
+        return model;
+    }
+
+    public void setModel(Rutas model) {
+        this.model = model;
+        this.setChanged();
+        this.notifyObservers();
+    }  
+
+    
+    
+    public void agregarAct(Actividad a){
+        model.getAcividades().put(a.getId(), a);
         this.setChanged();
         this.notifyObservers();
     }
     
-    public void addObserver(Observer o){
-    super.addObserver(o);
-    setChanged();
-    notifyObservers(null);    
+     public void agregarRela(Relacion r){
+        model.agregarRelacion(r);
+        this.setChanged();
+        this.notifyObservers();
     }
-    
 }

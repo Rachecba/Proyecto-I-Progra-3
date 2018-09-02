@@ -6,14 +6,16 @@
 package cmp.logic;
 
 import static cmp.logic.ReadXmlManaged.readXML;
-import cpm.data.Actividad;
-import cpm.data.Datos;
-import cpm.data.Relacion;
+import cmp.data.Actividad;
+import cmp.data.Datos;
+import cmp.data.Relacion;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.UnmarshalException;
+import org.xml.sax.SAXParseException;
 
 /**
  *
@@ -22,37 +24,19 @@ import javax.xml.bind.JAXBException;
 public class Loader_xml {
     
     //Leer el archivo y retornar un MAP con todas las actividades
-    public static Map<String, Actividad> act_xml(String direccion) {
-        try{
-            Map<String,Actividad> map = new HashMap<>();
-            Datos data = readXML(direccion);
-            data.getActividades().forEach((a) -> {
-                map.put(a.getId(),a);
-            });
-//            data.getActividades().forEach((rl) -> {
-//                System.out.print("Actividades: " + rl.toString() + "\n\n");
-//            });
-            return map;
-            
-        }catch(FileNotFoundException | JAXBException e){
-            System.out.print("Error creando la lista de actividades. " + e);
-        }
-        return null;
+    public static Map<String, Actividad> act_xml(String direccion) throws UnmarshalException, SAXParseException, JAXBException, FileNotFoundException {
+        Map<String,Actividad> map = new HashMap<>();
+        Datos data = readXML(direccion);
+        data.getActividades().forEach((a) -> {
+            map.put(a.getId(),a);
+        });
+        return map;
     }
     
     //Retornar todas las relaciones
-    public static List<Relacion> relac_xml(String direccion) {
-        try{
-            Datos data = readXML(direccion);
-//            data.getRelaciones().forEach((rl) -> {
-//                System.out.print("Relaciones: " + rl.toString() + "\n\n");
-//            });
-            return data.getRelaciones();
-            
-        }catch(FileNotFoundException | JAXBException e){
-            System.out.print("Error creando la lista de relaciones. " + e);
-        }
-        return null;
+    public static List<Relacion> relac_xml(String direccion) throws UnmarshalException, SAXParseException, JAXBException, FileNotFoundException, NullPointerException {
+        Datos data = readXML(direccion);
+        return data.getRelaciones();
     }
     
     public void agregarSucesores(Map<String, Actividad> m, List<Relacion> r) {

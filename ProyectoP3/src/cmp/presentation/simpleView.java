@@ -1,37 +1,47 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+* To change this license header, choose License Headers in Project Properties.
+* To change this template file, choose Tools | Templates
+* and open the template in the editor.
+*/
 package cmp.presentation;
 
-import cpm.data.Actividad;
+import cmp.data.Actividad;
+import cmp.logic.Rutas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.Ellipse2D;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileSystemView;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.UnmarshalException;
+import org.xml.sax.SAXParseException;
 
 /**
  *
  * @author leaca
  */
-public class simpleView extends javax.swing.JFrame implements Observer{
-
+public class SimpleView extends javax.swing.JFrame implements Observer{
+    
     /**
      * Creates new form simpleView
      */
-    public simpleView() {
+    public SimpleView() {
         initComponents();
-        initListeners(); //metodo agregado por el profe
+        initListeners();        
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -41,22 +51,102 @@ public class simpleView extends javax.swing.JFrame implements Observer{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        menuBar = new javax.swing.JMenuBar();
+        Archivo = new javax.swing.JMenu();
+        Guardar = new javax.swing.JMenuItem();
+        Recuperar = new javax.swing.JMenuItem();
+        Limpiar = new javax.swing.JMenuItem();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        Archivo.setText("Archivo");
+
+        Guardar.setText("Guardar");
+        Guardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GuardarActionPerformed(evt);
+            }
+        });
+        Archivo.add(Guardar);
+
+        Recuperar.setText("Recuperar");
+        Recuperar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RecuperarActionPerformed(evt);
+            }
+        });
+        Archivo.add(Recuperar);
+
+        Limpiar.setText("Limpiar");
+        Limpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LimpiarActionPerformed(evt);
+            }
+        });
+        Archivo.add(Limpiar);
+
+        menuBar.add(Archivo);
+
+        setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 819, Short.MAX_VALUE)
+            .addGap(0, 616, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 436, Short.MAX_VALUE)
+            .addGap(0, 698, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    //controller crea una actividad, actualiza el modelo y el modelo el observador que esta en el view
+    
+    
+    private void LimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LimpiarActionPerformed
+        model.getModel().getAcividades().clear();
+        model.getModel().getRelaciones().clear();
+        this.repaint();
+    }//GEN-LAST:event_LimpiarActionPerformed
+    
+    
+    
+    private void RecuperarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecuperarActionPerformed
+        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        int returnValue = jfc.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = jfc.getSelectedFile();
+            try {
+                model.setModel(new Rutas(selectedFile.getAbsolutePath()));
+                for (Actividad a : model.getModel().getAcividades().values()){
+                    a.setY(a.getY()+(menuBar.getHeight()+50));
+                }
+                
+            } catch (IllegalArgumentException e) {
+                JOptionPane.showMessageDialog(null, "Error, el XML contiene actividades sin ninguna relación.", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+            } catch (UnmarshalException | SAXParseException e) {
+                JOptionPane.showMessageDialog(null, "Error, el archivo escogido no es tipo XML.", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+            } catch(FileNotFoundException | JAXBException e){
+                JOptionPane.showMessageDialog(null, "Error, con la carga del XML.", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+            } catch(NullPointerException e){
+                JOptionPane.showMessageDialog(null, "El archivo no tiene toda la información necesaria para crear el grafo.", "AVISO", JOptionPane.INFORMATION_MESSAGE);
+            } catch(Exception e){
+                System.out.print("Error, excepcion: " + e);
+            }
+        }
+    }//GEN-LAST:event_RecuperarActionPerformed
+    
+    private void GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GuardarActionPerformed
+        try{
+            controller.downloadFile();
+        }catch(JAXBException e){
+            System.out.print("Error creando el archivo XML" + e);
+        }
+    }//GEN-LAST:event_GuardarActionPerformed
+    
     /**
      * @param args the command line arguments
      */
@@ -64,8 +154,8 @@ public class simpleView extends javax.swing.JFrame implements Observer{
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+        * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+        */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -74,47 +164,70 @@ public class simpleView extends javax.swing.JFrame implements Observer{
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(simpleView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SimpleView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(simpleView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SimpleView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(simpleView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SimpleView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(simpleView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SimpleView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        //</editor-fold>
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new simpleView().setVisible(true);
+                new SimpleView().setVisible(true);
             }
         });
     }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu Archivo;
+    private javax.swing.JMenuItem Guardar;
+    private javax.swing.JMenuItem Limpiar;
+    private javax.swing.JMenuItem Recuperar;
+    private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables
-
+    
+    Actividad anterior;
+    Actividad seleccionada;
     public Model model;
     public Controller controller;
-    int r = 20; //radio del circulo 
-    int d = 40; //diametro del circulo
+    int r = 20; //radio
+    int d = 40; //diametro
     boolean arrastrar;
     int mouseX;
     int mouseY;
     String idActividad;
     
-    public void setModel(Model r){
-        this.model = r;
-        model.addObserver(this); //agregamos este view a la lista de observers del model
+    public void setModel(Model model) {
+        this.model = model;
+        this.model.addObserver(this);
     }
     
-    public void setController(Controller c){
-        this.controller = c;  
-             
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
+    
+    
+    public Actividad seleccionar(int x, int y){
+        for(Actividad a : model.getModel().getAcividades().values()){
+            if( (new Ellipse2D.Double(a.getX()-r, a.getY() - r, d, d)).contains(x,y))
+                return a;
+        }
+        return null;
     }
     
     public void initListeners(){
+        this.addKeyListener(new KeyAdapter(){
+            public void keyPressed(KeyEvent e){
+                if(e.getKeyCode()==KeyEvent.VK_ESCAPE)
+                    anterior=null;
+                System.out.println("hola");
+            }
+        });
         this.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent ev){
@@ -130,8 +243,8 @@ public class simpleView extends javax.swing.JFrame implements Observer{
             
             @Override
             public void mousePressed(MouseEvent e){
-            
-                for(Actividad a : model.getR().getAcividades().values()){
+                
+                for(Actividad a : model.getModel().getAcividades().values()){
                     if(new Rectangle(a.getX() - d/2, a.getY() - d/2, d, d).contains(e.getPoint())){
                         idActividad = a.getId();
                         arrastrar = true;
@@ -151,24 +264,16 @@ public class simpleView extends javax.swing.JFrame implements Observer{
         this.addMouseMotionListener(new MouseMotionAdapter(){
             @Override
             public void mouseDragged(MouseEvent e){
-               if(arrastrar){
-                   model.getR().getAcividades().get(idActividad).setX(e.getX());
-                   model.getR().getAcividades().get(idActividad).setY(e.getY());
-               }
+                if(arrastrar){
+                    model.getModel().getAcividades().get(idActividad).setX(e.getX());
+                    model.getModel().getAcividades().get(idActividad).setY(e.getY());
+                }
                 
-               repaint(); 
+                repaint();
             }
             
         });
-                
-    }
-    
-    public Actividad seleccionar(int x, int y){
-        for(Actividad a : model.getR().getAcividades().values()){
-            if( (new Ellipse2D.Double(a.getX()-r, a.getY() - r, d, d)).contains(x,y))
-                return a;
-        }
-        return null;
+        
     }
     
     public void preAgregarActividad(int x, int y){
@@ -186,25 +291,25 @@ public class simpleView extends javax.swing.JFrame implements Observer{
             if (option == JOptionPane.OK_OPTION){
                 // Id no vacio
                 if("".equals(id.getText())){
-                    mensajeAlerta("Debe ingresar un ID");
+                    JOptionPane.showMessageDialog(null, "Debe ingresar un ID", "ERROR", JOptionPane.INFORMATION_MESSAGE);
                     isActividadValida = false;
                 }
                 
                 // Duracion no vacia
                 if("".equals(duracion.getText())){
-                    mensajeAlerta("Debe ingresar una duración");
+                    JOptionPane.showMessageDialog(null, "Debe ingresar una duración", "ERROR", JOptionPane.INFORMATION_MESSAGE);
                     isActividadValida = false;
                 }
                 // Que sea entero
                 if(!esEntero(duracion.getText())){
-                    mensajeAlerta("La duración debe ser un número entero");
+                    JOptionPane.showMessageDialog(null, "La duración debe ser un número entero", "ERROR", JOptionPane.INFORMATION_MESSAGE);
                     isActividadValida = false;
                 }
                 
                 // Que sea positivo
                 if(!"".equals(duracion.getText()) && esEntero(duracion.getText())){ //verificar que duracion sea positivo solo si no es null y si es entero
                     if(Integer.parseInt(duracion.getText()) < 0){
-                        mensajeAlerta("La duración debe ser un número positivo");
+                        JOptionPane.showMessageDialog(null, "La duración debe ser un número positivo", "ERROR", JOptionPane.INFORMATION_MESSAGE);
                         isActividadValida = false;
                     }
                 }
@@ -212,9 +317,9 @@ public class simpleView extends javax.swing.JFrame implements Observer{
                 // Que el ID no exista
                 if (isActividadValida) {
                     try{
-                        controller.agregarActividad(id.getText(), Integer.parseInt(duracion.getText()), x, y);                            
+                        controller.agregarActividad(id.getText(), Integer.parseInt(duracion.getText()), x, y);
                     }catch(Exception e){
-                        mensajeAlerta(e.getMessage());
+                        JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.INFORMATION_MESSAGE);
                         isActividadValida = false;
                     }
                 }
@@ -222,33 +327,54 @@ public class simpleView extends javax.swing.JFrame implements Observer{
         } while (!isActividadValida);
     }
     
-    public void mensajeAlerta(String mensaje){
-        JOptionPane.showMessageDialog(null, mensaje, "ERROR", JOptionPane.INFORMATION_MESSAGE);
-    }
-    
     public boolean esEntero(String numero){ //valida si el numero ingresado es un entero
-        for(int i = 0; i < numero.length(); i++){ 
+        for(int i = 0; i < numero.length(); i++){
             if(Character.isLetter(numero.charAt(i)) || numero.charAt(i) == '.' || numero.charAt(i) == ',') //isDigit(numero.charAt(i)))
                 return false;
         }
         return true;
+        
     }
     
-    public void paint(Graphics g){
+    @Override
+    public void paint(Graphics g) {
         super.paint(g);
-        for(Actividad a : model.getR().getAcividades().values()){
-            if(a.calculoHolgura() == 0)
-                g.setColor(Color.red);
-            else
-                g.setColor(Color.black);
-            g.drawOval(a.getX()-r, a.getY()-r, d, d);
-            g.drawString(a.getId()+ "(" +a.getDuracion()+")", a.getX()-r+5, a.getY()+5);
+        for (Actividad a : model.getModel().getAcividades().values()) {
+            if (!("Root".equals(a.getId()) || "End".equals(a.getId()))) {
+                if (a.calculoHolgura() == 0) {
+                    g.setColor(Color.red);
+                } else {
+                    g.setColor(Color.black);
+                }
+                g.drawOval(a.getX() - r, a.getY() - r , d, d);
+                
+                g.drawString(a.getId() + "(" + a.getDuracion() + ")", a.getX() - r + 5, a.getY());
+            }
+        }
+        String tmp;
+        String tmp2;
+        for (int i = 0; i < model.getModel().getRelaciones().size(); i++) {
+            tmp = model.getModel().getRelaciones().get(i).getAct();
+            tmp2 = model.getModel().getRelaciones().get(i).getSuce();
+            {
+                if (model.getModel().getAcividades().get(tmp).calculoHolgura() == 0 && model.getModel().getAcividades().get(tmp2).calculoHolgura() == 0) {
+                    g.setColor(Color.red);
+                    
+                    g.drawLine(model.getModel().getAcividades().get(tmp).getX()  , model.getModel().getAcividades().get(tmp).getY() ,
+                            model.getModel().getAcividades().get(tmp2).getX() , model.getModel().getAcividades().get(tmp2).getY());
+                    
+                } else {
+                    g.setColor(Color.blue);
+                    g.drawLine(model.getModel().getAcividades().get(tmp).getX(), model.getModel().getAcividades().get(tmp).getY(),
+                            model.getModel().getAcividades().get(tmp2).getX(), model.getModel().getAcividades().get(tmp2).getY());
+                    
+                }
+            }
         }
     }
-
+    
     @Override
     public void update(Observable o, Object arg) {
-       this.repaint(); //llama al metodo paint que tenemos implementado arriba
-       
+        this.repaint();
     }
 }

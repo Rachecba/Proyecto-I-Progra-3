@@ -5,12 +5,14 @@
  */
 package cmp.logic;
 
-import cpm.data.Datos;
+import cmp.data.Datos;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.Unmarshaller;
+import org.xml.sax.SAXParseException;
 
 
 /**
@@ -18,7 +20,7 @@ import javax.xml.bind.Unmarshaller;
  * @author leaca
  */
 public class ReadXmlManaged {
-    public static Datos readXML (String FilePath) throws JAXBException, FileNotFoundException{
+    public static Datos readXML (String FilePath) throws JAXBException, FileNotFoundException, UnmarshalException, SAXParseException{
         JAXBContext context = JAXBContext.newInstance(Datos.class);
         Unmarshaller um = context.createUnmarshaller();
         Datos data = (Datos) um.unmarshal(new FileReader(FilePath));
