@@ -6,8 +6,12 @@
 package cmp.presentation;
 
 import cmp.data.Actividad;
+import cmp.data.Relacion;
 import cmp.logic.Rutas;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
+import org.jgrapht.DirectedGraph;
 
 /**
  *
@@ -15,9 +19,17 @@ import java.util.Observable;
  */
 public class Model extends Observable{
     private Rutas model;
+    public Actividad temporal;
 
+    
     public Model() {
+         model=new Rutas();
+         temporal=new Actividad();
+
     }
+
+
+    
     
     public Model(Rutas model) {
         this.model = model;
@@ -29,10 +41,20 @@ public class Model extends Observable{
 
     public void setModel(Rutas model) {
         this.model = model;
-    }    
+        this.setChanged();
+        this.notifyObservers();
+    }  
+
+    
     
     public void agregarAct(Actividad a){
-        model.agregarActividad(a);
+        model.getAcividades().put(a.getId(), a);
+        this.setChanged();
+        this.notifyObservers();
+    }
+    
+     public void agregarRela(Relacion r){
+        model.agregarRelacion(r);
         this.setChanged();
         this.notifyObservers();
     }

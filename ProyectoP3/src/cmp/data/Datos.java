@@ -18,6 +18,14 @@ public class Datos {
     @XmlElement(name = "Relacion")
     private ArrayList<Relacion> relaciones;
 
+    public Datos() {
+    }
+    
+    public Datos(ArrayList<Actividad> actividades, ArrayList<Relacion> relaciones) {
+        this.actividades = actividades;
+        this.relaciones = relaciones;
+    }
+    
     public ArrayList<Actividad> getActividades() {
         return actividades;
     }

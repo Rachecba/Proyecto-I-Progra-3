@@ -17,6 +17,12 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import static cmp.logic.Loader_xml.act_xml;
 import static cmp.logic.Loader_xml.relac_xml;
+import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.UnmarshalException;
+import org.xml.sax.SAXParseException;
 
 /**
  *
@@ -29,8 +35,44 @@ public final class Rutas {
     private final Map<String, Actividad> acividades;
     private final List<Relacion> relaciones;
 
-    //constructor
-    public Rutas(String direccion){
+    
+    public Rutas() {
+        Loader_xml loader = new Loader_xml();
+        DirectedGraph h;
+        acividades = new HashMap();
+        relaciones = new LinkedList();
+
+        loader.contruirEstructura(acividades, relaciones);
+        h = construirGrafo(acividades, relaciones);
+        asignarRoot(acividades, h);
+        asignarEnd(acividades, h);
+
+        recorreGrafoIn(h);
+        recorreGrafoF(h);
+    }
+    public void actualizar(Actividad a){
+       DirectedGraph h;
+       acividades.put(a.getId(), a);
+       h=construirGrafo(acividades,relaciones);
+       asignarRoot(acividades,h);
+       asignarEnd(acividades,h);
+       recorreGrafoIn(h);
+       recorreGrafoF(h);
+       
+    }
+
+    public void actualizarRelacion(Relacion r) {
+        DirectedGraph h;
+        relaciones.add(r);
+        h = construirGrafo(acividades, relaciones);
+        asignarRoot(acividades, h);
+        asignarEnd(acividades, h);
+        recorreGrafoIn(h);
+        recorreGrafoF(h);
+
+    }
+
+    public Rutas(String direccion) throws UnmarshalException, SAXParseException, JAXBException, FileNotFoundException{
         Loader_xml loader = new Loader_xml();
         DirectedGraph h;
         
@@ -58,7 +100,6 @@ public final class Rutas {
                 root.agregarSucesor(entrada.getValue());
                 g.addEdge(root, entrada.getValue());
             }
-
         }
     }
 
@@ -75,7 +116,6 @@ public final class Rutas {
                 end.agregarPredecesor(entrada.getValue());
                 g.addEdge(entrada.getValue(), end);
             }
-
         }
     }
 
@@ -171,6 +211,11 @@ public final class Rutas {
 
     public List<Relacion> getRelaciones() {
         return relaciones;
+    }
+    
+    public void agregarRelacion(Relacion r){
+        if(!relaciones.contains(r))
+            relaciones.add(r);
     }
     
     public void agregarActividad(Actividad a){
