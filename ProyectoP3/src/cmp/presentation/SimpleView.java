@@ -126,13 +126,13 @@ public class SimpleView extends javax.swing.JFrame implements Observer{
                 }
                 
             } catch (IllegalArgumentException e) {
-                JOptionPane.showMessageDialog(null, "Error, el XML contiene actividades sin ninguna relación.", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                mensajeError("Error, el XML contiene actividades sin ninguna relación.");
             } catch (UnmarshalException | SAXParseException e) {
-                JOptionPane.showMessageDialog(null, "Error, el archivo escogido no es tipo XML.", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                mensajeError("Error, el archivo escogido no es tipo XML.");
             } catch(FileNotFoundException | JAXBException e){
-                JOptionPane.showMessageDialog(null, "Error, con la carga del XML.", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                mensajeError("Error, con la carga del XML.");
             } catch(NullPointerException e){
-                JOptionPane.showMessageDialog(null, "El archivo no tiene toda la información necesaria para crear el grafo.", "AVISO", JOptionPane.INFORMATION_MESSAGE);
+                mensajeAviso("El archivo no tiene toda la información necesaria para crear el grafo.");
             } catch(Exception e){
                 System.out.print("Error, excepcion: " + e);
             }
@@ -291,25 +291,25 @@ public class SimpleView extends javax.swing.JFrame implements Observer{
             if (option == JOptionPane.OK_OPTION){
                 // Id no vacio
                 if("".equals(id.getText())){
-                    JOptionPane.showMessageDialog(null, "Debe ingresar un ID", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                    mensajeError("Debe ingresar un ID.");
                     isActividadValida = false;
                 }
                 
                 // Duracion no vacia
                 if("".equals(duracion.getText())){
-                    JOptionPane.showMessageDialog(null, "Debe ingresar una duración", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                    mensajeError("Debe ingresar una duración.");
                     isActividadValida = false;
                 }
                 // Que sea entero
                 if(!esEntero(duracion.getText())){
-                    JOptionPane.showMessageDialog(null, "La duración debe ser un número entero", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                    mensajeError("La duración debe ser un número entero.");
                     isActividadValida = false;
                 }
                 
                 // Que sea positivo
                 if(!"".equals(duracion.getText()) && esEntero(duracion.getText())){ //verificar que duracion sea positivo solo si no es null y si es entero
                     if(Integer.parseInt(duracion.getText()) < 0){
-                        JOptionPane.showMessageDialog(null, "La duración debe ser un número positivo", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                        mensajeError("La duración debe ser un número positivo");
                         isActividadValida = false;
                     }
                 }
@@ -319,12 +319,20 @@ public class SimpleView extends javax.swing.JFrame implements Observer{
                     try{
                         controller.agregarActividad(id.getText(), Integer.parseInt(duracion.getText()), x, y);
                     }catch(Exception e){
-                        JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                        mensajeError(e.getMessage());
                         isActividadValida = false;
                     }
                 }
             } else break;
         } while (!isActividadValida);
+    }
+    
+    public void mensajeError(String mensaje){
+        JOptionPane.showMessageDialog(null, mensaje, "ERROR", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    public void mensajeAviso(String mensaje){
+        JOptionPane.showMessageDialog(null, mensaje, "AVISO", JOptionPane.INFORMATION_MESSAGE);
     }
     
     public boolean esEntero(String numero){ //valida si el numero ingresado es un entero
