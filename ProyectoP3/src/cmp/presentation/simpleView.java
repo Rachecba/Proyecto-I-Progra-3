@@ -9,6 +9,9 @@ import cpm.data.Actividad;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -131,7 +134,8 @@ public class simpleView extends javax.swing.JFrame implements Observer{
             @Override
             public void mousePressed(MouseEvent e){
             
-                for(Actividad a : model.getR().getAcividades().values()){
+                
+                for(Actividad a : controller.getActividades().values()){
                     if(new Rectangle(a.getX() - d/2, a.getY() - d/2, d, d).contains(e.getPoint())){
                         idActividad = a.getId();
                         arrastrar = true;
@@ -152,19 +156,20 @@ public class simpleView extends javax.swing.JFrame implements Observer{
             @Override
             public void mouseDragged(MouseEvent e){
                if(arrastrar){
-                   model.getR().getAcividades().get(idActividad).setX(e.getX());
-                   model.getR().getAcividades().get(idActividad).setY(e.getY());
+                   controller.getActividades().get(idActividad).setX(e.getX());
+                   controller.getActividades().get(idActividad).setY(e.getY());
                }
                 
                repaint(); 
             }
             
         });
+        
                 
     }
     
     public Actividad seleccionar(int x, int y){
-        for(Actividad a : model.getR().getAcividades().values()){
+        for(Actividad a : controller.getActividades().values()){ 
             if( (new Ellipse2D.Double(a.getX()-r, a.getY() - r, d, d)).contains(x,y))
                 return a;
         }
@@ -185,13 +190,13 @@ public class simpleView extends javax.swing.JFrame implements Observer{
             
             if (option == JOptionPane.OK_OPTION){
                 // Id no vacio
-                if("".equals(id.getText())){
+                if(esVacio(id.getText())){
                     mensajeAlerta("Debe ingresar un ID");
                     isActividadValida = false;
                 }
                 
                 // Duracion no vacia
-                if("".equals(duracion.getText())){
+                if(esVacio(duracion.getText())){
                     mensajeAlerta("Debe ingresar una duración");
                     isActividadValida = false;
                 }
@@ -202,7 +207,7 @@ public class simpleView extends javax.swing.JFrame implements Observer{
                 }
                 
                 // Que sea positivo
-                if(!"".equals(duracion.getText()) && esEntero(duracion.getText())){ //verificar que duracion sea positivo solo si no es null y si es entero
+                if(!esVacio(duracion.getText()) && esEntero(duracion.getText())){ //verificar que duracion sea positivo solo si no es null y si es entero
                     if(Integer.parseInt(duracion.getText()) < 0){
                         mensajeAlerta("La duración debe ser un número positivo");
                         isActividadValida = false;
@@ -212,7 +217,8 @@ public class simpleView extends javax.swing.JFrame implements Observer{
                 // Que el ID no exista
                 if (isActividadValida) {
                     try{
-                        controller.agregarActividad(id.getText(), Integer.parseInt(duracion.getText()), x, y);                            
+                        controller.agregarActividad(id.getText(), Integer.parseInt(duracion.getText()), x, y);
+                        
                     }catch(Exception e){
                         mensajeAlerta(e.getMessage());
                         isActividadValida = false;
@@ -228,15 +234,19 @@ public class simpleView extends javax.swing.JFrame implements Observer{
     
     public boolean esEntero(String numero){ //valida si el numero ingresado es un entero
         for(int i = 0; i < numero.length(); i++){ 
-            if(Character.isLetter(numero.charAt(i)) || numero.charAt(i) == '.' || numero.charAt(i) == ',') //isDigit(numero.charAt(i)))
+            if (Character.isLetter(numero.charAt(i)) || numero.charAt(i) == '.' || numero.charAt(i) == ',')
                 return false;
         }
         return true;
     }
     
+    public boolean esVacio(String str) {
+        return "".equals(str);
+    }
+    
     public void paint(Graphics g){
         super.paint(g);
-        for(Actividad a : model.getR().getAcividades().values()){
+        for(Actividad a : controller.getActividades().values()){ 
             if(a.calculoHolgura() == 0)
                 g.setColor(Color.red);
             else

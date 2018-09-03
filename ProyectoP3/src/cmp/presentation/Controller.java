@@ -8,6 +8,7 @@ package cmp.presentation;
 import cpm.data.Actividad;
 import cmp.presentation.Model;
 import cmp.presentation.simpleView;
+import java.util.Map;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -53,5 +54,9 @@ public class Controller{
             throw new Exception("La actividad con este ID ya existe");
         Actividad act = new Actividad(id, duracion, x, y);
         model.agregarActividad(act);
+    }
+    
+    public Map<String, Actividad> getActividades(){
+       return model.getR().getAcividades();
     }
 }
