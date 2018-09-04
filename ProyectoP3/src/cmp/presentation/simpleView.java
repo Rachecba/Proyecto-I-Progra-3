@@ -139,6 +139,8 @@ public class simpleView extends javax.swing.JFrame implements Observer{
                     if(new Rectangle(a.getX() - d/2, a.getY() - d/2, d, d).contains(e.getPoint())){
                         idActividad = a.getId();
                         arrastrar = true;
+                        mouseX = e.getX();
+                        mouseY = e.getY();
                         break;
                     }
                 }
@@ -156,8 +158,14 @@ public class simpleView extends javax.swing.JFrame implements Observer{
             @Override
             public void mouseDragged(MouseEvent e){
                if(arrastrar){
-                   controller.getActividades().get(idActividad).setX(e.getX());
-                   controller.getActividades().get(idActividad).setY(e.getY());
+                   int x = controller.getActividades().get(idActividad).getX();
+                   int y = controller.getActividades().get(idActividad).getY();
+                   
+                   controller.getActividades().get(idActividad).setX((x + e.getX()) - mouseX);
+                   controller.getActividades().get(idActividad).setY((y + e.getY()) - mouseY);
+                   
+                   mouseX = e.getX();
+                   mouseY = e.getY();
                }
                 
                repaint(); 
